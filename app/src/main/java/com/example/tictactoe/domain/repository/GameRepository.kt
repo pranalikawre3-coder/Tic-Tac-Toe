@@ -4,7 +4,7 @@ import com.example.tictactoe.domain.model.CellState
 import com.example.tictactoe.domain.model.GameRecord
 import kotlinx.coroutines.flow.Flow
 
-interface GameReposity{
+interface GameRepository {
     suspend fun saveGame(winnerName: String, board: List<CellState>)
     fun getAllGames(): Flow<List<GameRecord>>
     suspend fun clearGames()

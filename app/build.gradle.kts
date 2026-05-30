@@ -1,18 +1,16 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.compose)
+    //alias(libs.plugins.kotlin.android)
+    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.hilt)
+    id("org.jetbrains.kotlin.kapt")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
 
-    id("com.google.dagger.hilt.android")
-    id("kotlin-kapt")
 }
 
 android {
     namespace = "com.example.tictactoe"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.tictactoe"
@@ -34,9 +32,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
+    kotlin {
+        jvmToolchain(17)
+    }
+
     buildFeatures {
         compose = true
     }
@@ -64,8 +66,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     implementation("com.google.dagger:hilt-android:2.51.1")//
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")//
+    kapt("com.google.dagger:hilt-compiler:2.51.1")//
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")//
 }
 
-}
