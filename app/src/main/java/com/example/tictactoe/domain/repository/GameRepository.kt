@@ -1,6 +1,5 @@
 package com.example.tictactoe.domain.repository
 
-import com.example.tictactoe.domain.model.CellState
 import com.example.tictactoe.domain.model.GameRecord
 import kotlinx.coroutines.flow.Flow
 
@@ -17,5 +16,5 @@ interface GameRepository {
 
     suspend fun deleteGameById(gameId: Int)
 
-    suspend fun clearALlGames()
+    suspend fun clearAllGames()
 }

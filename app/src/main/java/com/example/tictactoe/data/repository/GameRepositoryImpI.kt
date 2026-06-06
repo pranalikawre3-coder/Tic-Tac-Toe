@@ -1,8 +1,6 @@
 package com.example.tictactoe.data.repository
 
 import com.example.tictactoe.data.local.dao.GameDao
-import com.example.tictactoe.data.local.entity.GameRecordEntity
-import com.example.tictactoe.data.mapper.toDomain
 import com.example.tictactoe.data.mapper.toDomainList
 import com.example.tictactoe.data.mapper.toEntity
 import com.example.tictactoe.domain.model.GameRecord
@@ -49,7 +47,7 @@ class GameRepositoryImpl @Inject constructor(
         gameDao.deleteGameById(gameId)
     }
 
-    override suspend fun clearGames() {
+    override suspend fun clearAllGames() {
         gameDao.clearAllGames()
     }
 

@@ -1,5 +1,12 @@
 package com.example.tictactoe.data.mapper
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.example.tictactoe.data.local.entity.GameRecordEntity
+import com.example.tictactoe.domain.model.GameRecord
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 object GameRecordMapper {
     fun toDomain(entity: GameRecordEntity): GameRecord {
         return GameRecord(

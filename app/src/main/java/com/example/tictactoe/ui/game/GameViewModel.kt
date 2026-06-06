@@ -6,6 +6,7 @@ import com.example.tictactoe.domain.ai.AIPlayer
 import com.example.tictactoe.domain.model.CellState
 import com.example.tictactoe.domain.model.GameMode
 import com.example.tictactoe.domain.model.GameResult
+import com.example.tictactoe.domain.model.GameRecord
 import com.example.tictactoe.domain.model.Player
 import com.example.tictactoe.domain.repository.GameRepository
 import com.example.tictactoe.domain.usecase.CheckWinnerUseCase
@@ -112,16 +113,23 @@ class GameViewModel @Inject constructor(
     }
 
     private fun saveGameRecord(result: GameResult) {
-        val winnerName = when (result) {
+        val winner = when (result) {
             is GameResult.Win -> result.winner.name
             is GameResult.Draw -> "Draw"
             is GameResult.InProgress -> return
         }
         viewModelScope.launch {
             gameRepository.saveGame(
-                winnerName = winnerName,
-                board = _uiState.value.board
+                GameRecord(
+                    winner = winner,
+                    winnerSymbol = if (winner == "Draw") "" else winner.first().toString(),
+                    date = System.currentTimeMillis(),
+                    dateFormatted = "",
+                    totalMoves = _uiState.value.board.count { it != CellState.EMPTY },
+                    gameMode = _uiState.value.gameMode.name
+                )
             )
+
         }
     }
 }
