@@ -2,12 +2,10 @@ package com.example.tictactoe.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Delete
 import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.example.tictactoe.data.local.entity.GameRecordEntity
 import kotlinx.coroutines.flow.Flow
-import com.example.tictactoe.domain.model.GameRecord
 
 
 @Dao

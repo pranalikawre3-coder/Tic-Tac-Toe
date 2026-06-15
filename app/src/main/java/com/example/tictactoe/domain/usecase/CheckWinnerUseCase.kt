@@ -1,6 +1,6 @@
 package com.example.tictactoe.domain.usecase
 
-import com.example.tictactoe.domain.model.CellState
+import com.example.tictactoe.domain.model.Cell
 import com.example.tictactoe.domain.model.GameResult
 import com.example.tictactoe.domain.model.Player
 import javax.inject.Inject
@@ -16,18 +16,23 @@ class CheckWinnerUseCase @Inject constructor() {
     // [GameResult.Draw] if all cells are filled and no winner
     // null if the game is still ongoing
 
-    operator fun invoke(board: List<CellState>): GameResult? {
+    operator fun invoke(cells: List<Cell>): GameResult? {
         for (pattern in winPatterns) {
             val (a, b, c) = pattern
-            if (board[a] != CellState.EMPTY &&
-                board[a] == board[b] &&
-                board[b] == board[c]
+            if (cells[a] != Cell.EMPTY &&
+                cells[a] == cells[b] &&
+                cells[b] == cells[c]
                 ) {
-                val winner = if (board[a] == CellState.X) Player.X else Player.O
+                val winner = if (cells[a] == Cell.X) Player.X else Player.O
                 return GameResult.Win(winner, pattern)
             }
         }
-        if (board.none { it == CellState.EMPTY  }) return GameResult.Draw
-        return null
+        if (cells.none { it == Cell.EMPTY  }) {
+            return GameResult.Draw
+        }
+
+        //return null
+        return GameResult.InProgress
+
     }
 }

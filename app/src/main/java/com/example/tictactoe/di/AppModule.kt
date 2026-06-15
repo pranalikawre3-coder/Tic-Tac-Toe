@@ -3,7 +3,8 @@ package com.example.tictactoe.di
 import android.content.Context
 import androidx.room.Room
 import com.example.tictactoe.data.local.AppDatabase
-import com.example.tictactoe.data.local.GameDao
+import com.example.tictactoe.data.local.dao.GameDao
+import com.example.tictactoe.domain.ai.AIPlayer
 import com.example.tictactoe.data.repository.GameRepositoryImpl
 import com.example.tictactoe.domain.repository.GameRepository
 import dagger.Module
@@ -17,10 +18,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    @Provide
+    @Provides
     @Singleton
     fun provideDatabase(
-        @ApplicationContext context:context
+        @ApplicationContext context:Context
     ): AppDatabase {
         return Room.databaseBuilder(
             context,
@@ -43,5 +44,11 @@ object AppModule {
         gameDao: GameDao
     ): GameRepository {
         return GameRepositoryImpl(gameDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAIPlayer(): AIPlayer {
+        return AIPlayer()
     }
 }

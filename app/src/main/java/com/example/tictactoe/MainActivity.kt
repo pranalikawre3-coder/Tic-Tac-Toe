@@ -11,35 +11,38 @@ import androidx.compose.material3.Surface
 import com.example.tictactoe.ui.home.HomeScreen
 import androidx.navigation.compose.rememberNavController
 import com.example.tictactoe.ui.navigation.NavGraph
-
-
-
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
+import dagger.hilt.android.AndroidEntryPoint
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
-            NavGraph(navController = navController)
+
+
             TicTacToeTheme {
-                Surface {
-                    TicTacToe()
+                val navController = rememberNavController()
+                Surface (modifier = Modifier.fillMaxSize()){
+                    NavGraph(navController = navController)
+                    //TicTacToe()
                 }
             }
         }
     }
 }
-@Composable
-fun TicTacToe() {
-    HomeScreen(navController = rememberNavController())
-}
+//@Composable
+//fun TicTacToe() {
+//    HomeScreen(navController = rememberNavController())
+//}
 
 @Preview(showBackground = true)
 @Composable
 fun TicTacToePreview() {
     TicTacToeTheme {
         Surface{
-            TicTacToe()
+            TicTacToeApp()
         }
 
     }

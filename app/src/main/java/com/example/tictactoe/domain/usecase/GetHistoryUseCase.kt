@@ -9,5 +9,7 @@ import javax.inject.Inject
 class GetHistoryUseCase @Inject constructor(
     private val repository: GameRepository
 ){
-    operator fun invoke(): Flow<List<GameRecord>> = repository.getAllGames()
+    operator fun invoke(): Flow<List<GameRecord>> {
+        return repository.getAllGames()
+    }
 }

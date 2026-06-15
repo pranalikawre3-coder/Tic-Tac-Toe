@@ -7,8 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,26 +19,25 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.tictactoe.domain.model.GameMode
 import com.example.tictactoe.domain.model.GameResult
 import com.example.tictactoe.domain.model.Player
 import com.example.tictactoe.ui.components.BoardComposable
-
-public val Background    = Color(0xFF0F0F1A)
-public val Surface       = Color(0xFF1A1A2E)
-public val SurfaceLight  = Color(0xFF22223B)
-public val AccentX       = Color(0xFF4CC9F0)   // cyan for X
-public val AccentO       = Color(0xFFFF6B6B)   // coral for O
-public val TextPrimary   = Color(0xFFF8F9FA)
-public val TextSecondary = Color(0xFF9B9BB4)
-public val WinHighlight  = Color(0xFFFFD166)
+import com.example.tictactoe.ui.theme.*
 
 @Composable
 fun GameScreen(
     navController: NavController,
     viewModel: GameViewModel,
+    gameMode: GameMode,
     onNavigateHome: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+  //  val gameMode =
+    LaunchedEffect(gameMode) {
+        viewModel.startGame(gameMode)
+    }
 
     Box(
         modifier = Modifier
@@ -69,12 +67,17 @@ fun GameScreen(
             //Board
             BoardComposable(
                 uiState = uiState,
+//                winningCells = when (val result = uiState.gameResult) {
+//                    is GameResult.Win -> result.winningCells
+//                    else -> emptyList()
+//                },
                 onCellClick = { index -> viewModel.onCellClick(index) }
             )
         }
 
         //Result Dialog
-        if(uiState.gameResult != null){
+        if(uiState.gameResult is GameResult.Win ||
+            uiState.gameResult is GameResult.Draw){
             GameResultDialog(
                 uiState = uiState,
                 onPlayAgain = { viewModel.resetBoard() },
@@ -98,20 +101,27 @@ private fun ScoreBoard(uiState: GameUiState) {
             mark = "X",
             score = uiState.scoreX,
             accentColor = AccentX,
-            isActive = uiState.currentTurn == Player.X && uiState.gameResult == null,
+            isActive = uiState.currentTurn == Player.X &&
+                    uiState.gameResult is GameResult.InProgress,
             modifier = Modifier.weight(1f)
         )
 
-        Box(
+        Column(
             modifier = Modifier.align(Alignment.CenterVertically),
-            contentAlignment = Alignment.Center
+            horizontalAlignment = Alignment.CenterHorizontally
         ){
             Text(
-                text = "VS",
+                text = "${uiState.scoreDraw}",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
                 color = TextSecondary,
                 letterSpacing = 2.sp
+            )
+            Text(
+                text = "Draw",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = TextSecondary
             )
         }
 
@@ -120,7 +130,8 @@ private fun ScoreBoard(uiState: GameUiState) {
             mark = "O",
             score = uiState.scoreO,
             accentColor = AccentO,
-            isActive = uiState.currentTurn == Player.O && uiState.gameResult == null,
+            isActive = uiState.currentTurn == Player.O &&
+                       uiState.gameResult is GameResult.InProgress,
             modifier = Modifier.weight(1f)
         )
     }
@@ -249,7 +260,7 @@ private fun GameResultDialog(
                 textAlign = TextAlign.Center
             )
             Row(
-                horizontalArrangement = Arrangement.spacedBy(24.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(uiState.playerXName, color = AccentX, fontSize = 16.sp)
@@ -260,6 +271,16 @@ private fun GameResultDialog(
                         fontWeight = FontWeight.Black
                     )
                 }
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("Draw", color = TextSecondary, fontSize = 16.sp)
+                    Text(
+                        "${uiState.scoreDraw}",
+                        color = TextPrimary,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Black
+                    )
+                }
+
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(uiState.playerOName, color = AccentO, fontSize = 16.sp)
                     Text(

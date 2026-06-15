@@ -22,11 +22,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.tictactoe.domain.model.CellState
+import com.example.tictactoe.domain.model.Cell
 import com.example.tictactoe.domain.model.GameMode
 import com.example.tictactoe.domain.model.GameResult
 import com.example.tictactoe.domain.model.Player
 import com.example.tictactoe.ui.game.*
+import com.example.tictactoe.ui.theme.AccentX
+import com.example.tictactoe.ui.theme.AccentO
+import com.example.tictactoe.ui.theme.Background
+import com.example.tictactoe.ui.theme.SurfaceLight
+import com.example.tictactoe.ui.theme.WinHighlight
+import com.example.tictactoe.ui.theme.TextPrimary
+import com.example.tictactoe.ui.theme.TextSecondary
+import com.example.tictactoe.ui.theme.Surface
+import androidx.compose.runtime.*
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.material3.*
+import androidx.compose.animation.core.*
+
+
 
 @Composable
 fun BoardComposable(
@@ -46,13 +60,13 @@ fun BoardComposable(
             ) {
                 for (col in 0..2) {
                     val index = row * 3 + col
-                    val isClickable = uiState.board[index] == CellState.EMPTY &&
-                            (uiState.gameResult == null || uiState.gameResult is GameResult.InProgress) &&
+                    val isClickable = uiState.board[index] == Cell.EMPTY &&
+                            (uiState.gameResult is GameResult.InProgress) &&
                             !uiState.isAiThinking &&
                             !(uiState.gameMode == GameMode.VS_AI && uiState.currentTurn == Player.O)
 
                     BoardCell(
-                        cellState = uiState.board[index],
+                        cell = uiState.board[index],
                         isWinningCell = index in winningCells,
                         isClickable = isClickable,
                         onClick = { onCellClick(index) },
@@ -66,7 +80,7 @@ fun BoardComposable(
 
 @Composable
 private fun BoardCell(
-    cellState: CellState,
+    cell: Cell,
     isWinningCell: Boolean,
     isClickable: Boolean,
     onClick: () -> Unit,
@@ -109,26 +123,26 @@ private fun BoardCell(
         contentAlignment = Alignment.Center
     ) {
         AnimatedContent(
-            targetState = cellState,
+            targetState = cell,
             transitionSpec = {
                 (scaleIn(initialScale = 0.5f) + fadeIn()).togetherWith(scaleOut(targetScale = 0.5f) + fadeOut())
             },
             label = "cell"
         ) { state ->
             when (state) {
-                CellState.X -> Text(
+                Cell.X -> Text(
                     text = "X",
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
                     color = AccentX
                 )
-                CellState.O -> Text(
+                Cell.O -> Text(
                     text = "O",
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
                     color = AccentO
                 )
-                CellState.EMPTY -> Spacer(modifier = Modifier.size(42.dp))
+                Cell.EMPTY -> Spacer(modifier = Modifier.size(42.dp))
             }
         }
     }
